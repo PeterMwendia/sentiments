@@ -36,7 +36,9 @@ else
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
     bash miniconda.sh -u -b -p "$CONDA_PATH"
     source "$CONDA_PATH/etc/profile.d/conda.sh"
-
+    
+    # Add conda-forge to the channels
+    "$CONDA_BINARY" config --add channels conda-forge
     # Install Mamba
     "$CONDA_BINARY" install -y -c conda-forge mamba
 fi
