@@ -27,46 +27,46 @@
 # mamba install --file "$REQUIREMENTS_FILE"
 #!/bin/bash
 
-# Define installation paths
-MINICONDA_INSTALL_PATH="$HOME/miniconda"
-MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+# Define Conda and Mamba paths
+CONDA_PATH="/opt/render/miniconda"
+CONDA_BINARY="$CONDA_PATH/bin/conda"
+MAMBA_BINARY="$CONDA_PATH/bin/mamba"
 
 # Define environment and requirements file
 ENV_NAME="python37env"
 REQUIREMENTS_FILE="requirements.txt"
 
-# Download and install Miniconda only if it doesn't exist
-if [ ! -d "$MINICONDA_INSTALL_PATH" ]; then
-    mkdir -p "$MINICONDA_INSTALL_PATH"
-    wget "$MINICONDA_URL" -O miniconda.sh
-    bash miniconda.sh -b -p "$MINICONDA_INSTALL_PATH"
-fi
+# Check if Conda exists in the specified directory
+if [ -f "$CONDA_BINARY" ]; then
+    # Check if mamba is installed
+    if [ -f "$MAMBA_BINARY" ]; then
+        echo "Mamba is already installed."
+    else
+        echo "Mamba not found. Installing Mamba..."
+        "$CONDA_BINARY" install -y -c conda-forge mamba
+    fi
 
-# Use the conda binary from the Miniconda installation
-CONDA_BINARY="$MINICONDA_INSTALL_PATH/bin/conda"
+    # Activate the Miniconda environment
+    source "$CONDA_PATH/etc/profile.d/conda.sh"
+else
+    echo "Conda not found in the specified directory. Downloading and installing Miniconda..."
+    
+    # Download and install Miniconda
+    mkdir -p "$CONDA_PATH"
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+    bash miniconda.sh -b -p "$CONDA_PATH"
+    source "$CONDA_PATH/etc/profile.d/conda.sh"
 
-# Check if conda is installed
-if [ ! -f "$CONDA_BINARY" ]; then
-    echo "Error: conda binary not found. Ensure Miniconda installation is correct."
-    exit 1
-fi
-
-# Use the mamba binary from the Miniconda installation
-MAMBA_BINARY="$MINICONDA_INSTALL_PATH/bin/mamba"
-
-# Check if mamba is installed, if not, install it using conda
-if [ ! -f "$MAMBA_BINARY" ]; then
+    # Install Mamba
     "$CONDA_BINARY" install -y -c conda-forge mamba
 fi
-
-# Activate the Miniconda environment
-source "$MINICONDA_INSTALL_PATH/etc/profile.d/conda.sh"
 
 # Create Python 3.7 environment using mamba
 "$MAMBA_BINARY" create -n "$ENV_NAME" python=3.7
 
 # Activate the environment
-source "$MINICONDA_INSTALL_PATH/bin/activate" "$ENV_NAME"
+source "$CONDA_PATH/bin/activate" "$ENV_NAME"
 
 # Install requirements from a file using mamba
-"$MAMBA_BINARY" --no-plugins install --file "$REQUIREMENTS_FILE"
+"$MAMBA_BINARY" install --file "$REQUIREMENTS_FILE"
+
