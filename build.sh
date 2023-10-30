@@ -1,30 +1,3 @@
-# #!/bin/bash
-
-# # Define installation paths
-# MINICONDA_INSTALL_PATH="$HOME/miniconda"
-# MINICONDA_URL="https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
-
-# # Define environment and requirements file
-# ENV_NAME="python37env"
-# REQUIREMENTS_FILE="requirements.txt"
-
-# # Download and install Miniconda
-# mkdir -p "$MINICONDA_INSTALL_PATH"
-# wget "$MINICONDA_URL" -O miniconda.sh
-# bash miniconda.sh -b -p "$MINICONDA_INSTALL_PATH"
-# export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH"
-# conda init
-# source "$MINICONDA_INSTALL_PATH/etc/profile.d/conda.sh"
-
-# # Install Mamba
-# conda install -y -c conda-forge mamba
-
-# # Create Python 3.7 environment
-# mamba create -n "$ENV_NAME" python=3.7
-# conda activate "$ENV_NAME"
-
-# # Install requirements from a file
-# mamba install --file "$REQUIREMENTS_FILE"
 #!/bin/bash
 
 # Define Conda and Mamba paths
@@ -38,7 +11,7 @@ REQUIREMENTS_FILE="requirements.txt"
 
 # Check if Conda exists in the specified directory
 if [ -f "$CONDA_BINARY" ]; then
-    # Check if mamba is installed
+    # Check if Mamba is installed
     if [ -f "$MAMBA_BINARY" ]; then
         echo "Mamba is already installed."
     else
@@ -49,7 +22,14 @@ if [ -f "$CONDA_BINARY" ]; then
     # Activate the Miniconda environment
     source "$CONDA_PATH/etc/profile.d/conda.sh"
 else
-    echo "Conda not found in the specified directory. Downloading and installing Miniconda..."
+    echo "Conda not found in the specified directory. Removing any existing installation..."
+
+    # Clean up the Miniconda installation directory if it exists
+    if [ -d "$CONDA_PATH" ]; then
+        rm -rf "$CONDA_PATH"
+    fi
+
+    echo "Downloading and installing Miniconda..."
     
     # Download and install Miniconda
     mkdir -p "$CONDA_PATH"
@@ -61,12 +41,13 @@ else
     "$CONDA_BINARY" install -y -c conda-forge mamba
 fi
 
-# Create Python 3.7 environment using mamba
+# Create Python 3.7 environment using Mamba
 "$MAMBA_BINARY" create -n "$ENV_NAME" python=3.7
 
 # Activate the environment
 source "$CONDA_PATH/bin/activate" "$ENV_NAME"
 
-# Install requirements from a file using mamba
+# Install requirements from a file using Mamba
 "$MAMBA_BINARY" install --file "$REQUIREMENTS_FILE"
+
 
