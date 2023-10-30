@@ -13,6 +13,7 @@ mkdir -p "$MINICONDA_INSTALL_PATH"
 wget "$MINICONDA_URL" -O miniconda.sh
 bash miniconda.sh -b -p "$MINICONDA_INSTALL_PATH"
 export PATH="$MINICONDA_INSTALL_PATH/bin:$PATH"
+conda init
 source "$MINICONDA_INSTALL_PATH/etc/profile.d/conda.sh"
 
 # Install Mamba
