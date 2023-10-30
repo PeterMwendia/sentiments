@@ -32,9 +32,9 @@ else
     echo "Downloading and installing Miniconda..."
     
     # Download and install Miniconda
-    mkdir -p "$CONDA_PATH"
+    # mkdir -p "$CONDA_PATH"
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-    bash miniconda.sh -b -p "$CONDA_PATH"
+    bash miniconda.sh -u -b -p "$CONDA_PATH"
     source "$CONDA_PATH/etc/profile.d/conda.sh"
 
     # Install Mamba
